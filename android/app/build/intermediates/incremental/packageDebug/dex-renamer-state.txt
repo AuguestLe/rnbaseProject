@@ -1,0 +1,4 @@
+#Tue Apr 10 16:38:43 CST 2018
+base.0=D\:\\testproject\\base-react-native-app\\BaseProject\\android\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\1f\\main
+renamed.0=classes.dex
+file.0=D\:\\testproject\\base-react-native-app\\BaseProject\\android\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\1f\\main\\classes.dex

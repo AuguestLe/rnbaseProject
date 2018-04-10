@@ -1,0 +1,52 @@
+{
+  "name": "BaseProject",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "test": "jest",
+    "eslint": "eslint src"
+  },
+  "dependencies": {
+    "@remobile/react-native-toast": "^1.0.7",
+    "immutable": "^3.8.2",
+    "lodash": "^4.17.5",
+    "prop-types": "^15.6.0",
+    "querystring": "^0.2.0",
+    "react": "16.3.1",
+    "react-native": "0.55.1",
+    "react-native-device-info": "iamlaobie/react-native-device-info#ef6e3f33c4882e8ec86155aff3fc6f2e5ed15d77",
+    "react-native-extra-dimensions-android": "belinchung/react-native-extra-dimensions-android#4e1c03f0c5ee3dc26d820d3980796ac41eb51528",
+    "react-native-vector-icons": "^4.4.3",
+    "react-navigation": "^1.4.0",
+    "react-redux": "^5.0.6",
+    "redux": "^3.7.2",
+    "redux-devtools-extension": "^2.13.2",
+    "redux-mock-store": "^1.5.1",
+    "redux-saga": "0.16.0",
+    "redux-storage": "^4.1.2",
+    "redux-storage-engine-reactnativeasyncstorage": "^1.0.5",
+    "redux-storage-merger-immutablejs": "^1.0.5",
+    "redux-thunk": "^2.2.0",
+    "uuid": "^3.2.1"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-eslint": "^8.2.1",
+    "babel-jest": "22.4.3",
+    "babel-preset-react-native": "4.0.0",
+    "eslint": "^4.17.0",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.6.1",
+    "eslint-plugin-react-native": "^3.2.1",
+    "jest": "22.4.3",
+    "react-native-swipe": "^1.0.0",
+    "react-test-renderer": "16.3.1",
+    "redux-devtools-extension": "^2.13.2"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
+}
