@@ -1,16 +1,35 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { View, DeviceEventEmitter } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 import { StackNavigator } from 'react-navigation'
 import * as screens from '../containers'
 import { headerMarginTop, headerTitleFlex } from '../constants'
 import { NavBackButton, NavBarButton } from './'
 import { mainColor } from '../styles'
 
+const styles = StyleSheet.create({
+  defaultHeaderTitleStyle: {
+    alignSelf: 'center',
+    fontSize: 16,
+    flex: headerTitleFlex,
+    textAlign: 'center',
+  },
+  defaulteHaderStyle: {
+    paddingTop: headerMarginTop,
+    backgroundColor: mainColor,
+    height: 44 + headerMarginTop,
+  },
+  navHeaderRight: {
+    height: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+})
+
+// 用于存储_handleNavigationChange事件
 const subscribedComponents = []
 
-let gRouterKeys = []
-
+// 获取路由的名字
 function _getCurrentRouteName(navigationState) {
   if (!navigationState) return null
   const route = navigationState.routes[navigationState.index]
@@ -18,23 +37,28 @@ function _getCurrentRouteName(navigationState) {
   return route.routeName
 }
 
+// 界面焦点事件更新
 export function updateFocus(currentState) {
   const currentRoute = _getCurrentRouteName(currentState)
   subscribedComponents.forEach(f => f(currentRoute))
 }
 
+// 默认导航属性
 const defaultNavigationOptions = {
   headerTintColor: '#FFFFFF',
-  headerTitleStyle: { alignSelf: 'center', fontSize: 16, flex: headerTitleFlex, textAlign: 'center' },
-  headerStyle: { paddingTop: headerMarginTop, backgroundColor: mainColor, height: 44 + headerMarginTop },
+  headerTitleStyle: styles.defaultHeaderTitleStyle,
+  headerStyle: styles.defaulteHaderStyle,
 }
 
+// 自定义导航
 const customNavigationOptions = {
   header: null,
 }
 
+// 获取容器组件
 function getScreen(WrappedComponent, { title, screenName } = {}) {
   return class extends React.Component {
+    // 类型定义
     static propTypes = {
       screenProps: PropTypes.shape({}),
       navigation: PropTypes.shape({
@@ -46,11 +70,26 @@ function getScreen(WrappedComponent, { title, screenName } = {}) {
       }).isRequired,
     }
 
+    // 定义默认值
     static defaultProps = {
       screenProps: {},
     }
 
+    // 导航栏
+    /**
+     * 使用
+     static navigator = {
+        title: '团队申请',// 导航栏标题
+        backgroundColor:'red',// 导航栏颜色
+        goBack:()=>{},// 导航栏返回点击事件
+        rightButton:{
+          title:'保存',// 导航栏右按钮标题
+          onPress:()=>{},// 导航栏右点击事件
+        }
+      }
+     */
     static navigationOptions = ({ navigation }) => {
+      // 导航栏标题
       let headerTitle = title
       if (headerTitle === undefined && WrappedComponent.navigator) {
         headerTitle = WrappedComponent.navigator.title
@@ -64,18 +103,13 @@ function getScreen(WrappedComponent, { title, screenName } = {}) {
       }
       const { params = {} } = navigation.state
       headerTitle = params.title || headerTitle
-      // if (headerTitle) {
-      //   headerTitle = (
-      //     <Text style={{ color: '#FFF', fontSize: 20 }}>{headerTitle}</Text>
-      //   )
-      // }
 
+      // 左按钮
       const { leftButton } = params
       let headerLeft = (<NavBackButton
         style={{ paddingHorizontal: 10 }}
         onPress={() => {
           navigation.goBack()
-          gRouterKeys.pop()
         }}
       />)
       if (leftButton) {
@@ -83,16 +117,16 @@ function getScreen(WrappedComponent, { title, screenName } = {}) {
           style={{ paddingHorizontal: 10 }}
           onPress={() => {
             leftButton.onPress()
-            gRouterKeys.pop()
           }}
         />)
       }
 
+      // 右按钮
       const { rightButton } = params
       let headerRight
       if (rightButton) {
         headerRight = (
-          <View style={{ height: 44, alignItems: 'center', justifyContent: 'center' }}>
+          <View style={styles.navHeaderRight}>
             <NavBarButton
               text={rightButton.text}
               onPress={rightButton.onPress}
@@ -101,7 +135,7 @@ function getScreen(WrappedComponent, { title, screenName } = {}) {
         )
       } else if (headerTitle) {
         headerRight = (
-          <View style={{ height: 44, alignItems: 'center', justifyContent: 'center' }}>
+          <View style={styles.navHeaderRight}>
             <NavBarButton
               text="  "
             />
@@ -125,7 +159,9 @@ function getScreen(WrappedComponent, { title, screenName } = {}) {
       if (this.wrappedInstance) {
         const { navigator } = WrappedComponent
         if (navigator) {
-          const wrappedInstance = this.wrappedInstance.wrappedInstance ? this.wrappedInstance.wrappedInstance : this.wrappedInstance
+          const wrappedInstance = this.wrappedInstance.wrappedInstance
+            ? this.wrappedInstance.wrappedInstance
+            : this.wrappedInstance
           let leftButton
           let rightButton
           if (navigator.goBack) {
@@ -158,13 +194,15 @@ function getScreen(WrappedComponent, { title, screenName } = {}) {
     }
 
     isFocused = true
-
+    // 导航改变时调用componentWillFocus、componentDidFocus方法，相当于增加了将要成为焦点、已经成为焦点两个生命方法
     _handleNavigationChange = (routeName) => {
       const isFocused = screenName === routeName
       if (this.isFocused !== isFocused) {
         this.isFocused = isFocused
         if (this.wrappedInstance) {
-          const wrappedInstance = this.wrappedInstance.wrappedInstance ? this.wrappedInstance.wrappedInstance : this.wrappedInstance
+          const wrappedInstance = this.wrappedInstance.wrappedInstance
+            ? this.wrappedInstance.wrappedInstance
+            : this.wrappedInstance
           if (isFocused && wrappedInstance.componentWillFocus) {
             wrappedInstance.componentWillFocus()
           }
@@ -178,54 +216,56 @@ function getScreen(WrappedComponent, { title, screenName } = {}) {
     render() {
       const { navigation, screenProps } = this.props
       const { params = {}, key, routeName } = navigation.state
-      // 当点击链接进行页面跳转时，因为Linking是加载在Home上，所以params.routerKeys里面只有Home一个路由；
-      // 通过fromLinking参数来判断是否是链接进行的跳转；如果是通过链接进行的跳转，记录路由的routerKeys要从全局保存的gRouterKeys中获取；
-      // 获取完routerKeys之后，fromLinking就没有作用了，删除fromLinking之后 还是走之前的逻辑；
-      // gRouterKeys里记录的router在后退时也要在goBack、pop、popN等后退方法中做相应的删除
-      if (params.fromLinking) {
-        params.routerKeys = gRouterKeys
-        delete params.fromLinking
-      }
       const routerKeys = [].concat(params.routerKeys || []).concat({ key, routeName })
-      gRouterKeys = routerKeys
       return (
         <WrappedComponent
           ref={wrappedInstance => this.wrappedInstance = wrappedInstance}
           {...screenProps}
           {...params}
           router={{
+            // 返回栈顶
+            /**
+             * 使用
+              this.props.router.popToTop()
+             */
             popToTop: () => {
               navigation.goBack(routerKeys[1].key)
-              gRouterKeys.splice(1, gRouterKeys.length - 1)
             },
+            // 根据路由名字出栈,返回到指定页面
+            /**
+             * 使用
+              this.props.router.popTo('HomePage')
+             */
             popTo: (nextRouteName) => {
               for (let i = routerKeys.length - 1; i > 0; i -= 1) {
                 if (routerKeys[i - 1].routeName === nextRouteName) {
                   navigation.goBack(routerKeys[i].key)
-                  gRouterKeys.splice(i, gRouterKeys.length - i)
                 }
               }
             },
+            // 根据个数出栈, 返回到前第几个界面
+            /**
+             * 使用
+              this.props.router.popN(1)
+             */
             popN: (number = 1) => {
               navigation.goBack(routerKeys[routerKeys.length - number].key)
-              gRouterKeys.splice(gRouterKeys.length - number, number)
             },
+            // 返回上一层
+            /**
+             * 使用
+              this.props.router.pop()
+             */
             pop: () => {
               navigation.goBack()
-              gRouterKeys.pop()
             },
-            toHome: () => {
-              navigation.goBack(routerKeys[1].key)
-              gRouterKeys.splice(1, gRouterKeys.length - 1)
-              DeviceEventEmitter.emit('toHome')
-            },
+            // 入栈, 跳转到哪一个页面
+            /**
+             * 使用
+              this.props.router.navigate('HomePage',{})
+             */
             navigate: (nextRouteName, options) => {
-              let fromLinking = false
-              if (options) {
-                const { fromLinking: linking } = options
-                fromLinking = linking
-              }
-              navigation.navigate(nextRouteName, { ...options, routerKeys, fromLinking })
+              navigation.navigate(nextRouteName, { ...options, routerKeys })
             },
           }}
           navigation={navigation}
@@ -235,7 +275,12 @@ function getScreen(WrappedComponent, { title, screenName } = {}) {
   }
 }
 
+// 注册导航栈
 export function registerScreens(views) {
+  // 初始化导航
+  /**
+   * 把 src/containers/index.js 文件定义的页面格式化成 StackNavigator 需要的格式
+   */
   const ret = StackNavigator(Object.keys(views).reduce((obj, key) => {
     const screen = views[key] && getScreen(views[key], { screenName: key })
     return Object.assign(obj, { [key]: { screen } })
@@ -243,6 +288,7 @@ export function registerScreens(views) {
   return ret
 }
 
+// 注册登录导航
 const { LoginPage } = screens
 export const LoginNavigator = registerScreens({ LoginPage })
 

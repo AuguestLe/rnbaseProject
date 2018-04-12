@@ -66,9 +66,20 @@ const itemStyles = StyleSheet.create({
 })
 
 const rowData = [
-  [{ key: 'JiShiPingGuXiTongPage', desc: '即时评估系统', icon: '' }, { key: 'KuaiShuXianShangPingGuPage', desc: '快速线上评估', icon: '' }, { key: 'ZhuanYeXianXiaJianCePage', desc: '专业线下检测', icon: '' }],
-  [{ key: 'OrderStatisticsPage', desc: '订单统计', icon: '' }, { key: 'PingGuShiStatisticsPage', desc: '评估师统计', icon: '' }, { key: 'OrganizationStatisticsPage', desc: '机构统计', icon: '' }],
-  [{ key: 'SettingPage', desc: '设置', icon: '' }]]
+  [
+    { key: 'JiShiPingGuXiTongPage', desc: '即时评估系统', icon: '' },
+    { key: 'KuaiShuXianShangPingGuPage', desc: '快速线上评估', icon: '' },
+    { key: 'ZhuanYeXianXiaJianCePage', desc: '专业线下检测', icon: '' },
+  ],
+  [
+    { key: 'OrderStatisticsPage', desc: '订单统计', icon: '' },
+    { key: 'PingGuShiStatisticsPage', desc: '评估师统计', icon: '' },
+    { key: 'OrganizationStatisticsPage', desc: '机构统计', icon: '' },
+  ],
+  [
+    { key: 'SettingPage', desc: '设置', icon: '' },
+  ],
+]
 
 export default class Home extends Component {
   static propTypes = {
@@ -87,7 +98,11 @@ export default class Home extends Component {
   renderRowItem = (item) => {
     const { desc, key } = item
     return (
-      <TouchableOpacity key={key} style={itemStyles.container} onPress={() => { this.onItemPress(key, desc) }}>
+      <TouchableOpacity
+        key={key}
+        style={itemStyles.container}
+        onPress={() => { this.onItemPress(key, desc) }}
+      >
         <View style={itemStyles.icon} />
         <Text style={itemStyles.text}>{desc}</Text>
       </TouchableOpacity>
@@ -101,7 +116,7 @@ export default class Home extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.content1} >
+        <View style={styles.content1}>
           <Text style={styles.welcome}>
           首页
           </Text>

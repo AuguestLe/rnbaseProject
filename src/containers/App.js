@@ -14,12 +14,12 @@ const actions = bindActionCreators(actionCreators, store.dispatch)
 
 class App extends React.Component {
   state = {
-    showLoginPanel: false,
-    loginTop: new Animated.Value(0),
+    showLoginPanel: false, // 是否显示登录界面
+    loginTop: new Animated.Value(0), // 登录页顶部高度
     appHeight: null, // 在4.4以下，deviceHeight高度包括statusbar，所以在app启动后，由root component通过onLayout重新计算
   }
 
-  componentWillMount() {
+  async componentDidMount() {
     /**
      * 主动根据appState来决定是否显示登陆页
      * 估计RN在App退出后，会暂时保存App的内存数据来加速App再次打开（再次打开不会去reload redux state，不会触发onChange）
@@ -30,9 +30,6 @@ class App extends React.Component {
       this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow)
       this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide)
     }
-  }
-
-  async componentDidMount() {
     this.routerUnlisten = store.subscribe(this.onChange)
 
     api.init()
@@ -40,8 +37,8 @@ class App extends React.Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     return (
-      this.state.appHeight !== nextState.appHeight ||
-      this.state.showLoginPanel !== nextState.showLoginPanel
+      this.state.appHeight !== nextState.appHeight
+      || this.state.showLoginPanel !== nextState.showLoginPanel
     )
   }
 
@@ -56,7 +53,9 @@ class App extends React.Component {
 
     const showLoginPanel = !appState.player.logon
     this.setState({ showLoginPanel }, () => {
-      Animated.spring(loginTop, { toValue: showLoginPanel ? 0 : deviceHeight }).start()
+      Animated
+        .spring(loginTop, { toValue: showLoginPanel ? 0 : deviceHeight })
+        .start()
     })
   }
 
@@ -81,7 +80,12 @@ class App extends React.Component {
     return (
       <Provider store={store}>
         <View style={{ flex: 1 }} onLayout={this.handleAppLayout}>
-          <StatusBar translucent backgroundColor="transparent" barStyle="light-content" hidden={false} />
+          <StatusBar
+            translucent
+            backgroundColor="transparent"
+            barStyle="light-content"
+            hidden={false}
+          />
           <View style={{ flex: 1 }}>
             <Navigator
               screenProps={{ actions, store }}
@@ -91,11 +95,26 @@ class App extends React.Component {
             />
           </View>
           {showLoginPanel &&
-          <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: '#FFF' }}>
-            <Animated.View style={{ top: loginTop, left: 0, right: 0, height: appHeight }}>
-              <LoginNavigator screenProps={{ actions, store }} />
-            </Animated.View>
-          </View>}
+            <View style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: '#FFF',
+            }}
+            >
+              <Animated.View style={{
+                top: loginTop,
+                left: 0,
+                right: 0,
+                height: appHeight,
+              }}
+              >
+                <LoginNavigator screenProps={{ actions, store }} />
+              </Animated.View>
+            </View>
+          }
         </View>
       </Provider>
     )

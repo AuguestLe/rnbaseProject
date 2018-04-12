@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest",
-    "eslint": "eslint src"
+    "eslint": "eslint src",
+    "eslint-git": "eslint $(git diff-index --cached HEAD --name-only --diff-filter ACMR | egrep '.js$')"
   },
   "dependencies": {
     "@remobile/react-native-toast": "^1.0.7",
@@ -42,10 +43,12 @@
     "eslint-plugin-react": "^7.6.1",
     "eslint-plugin-react-native": "^3.2.1",
     "jest": "22.4.3",
-    "react-native-swipe": "^1.0.0",
     "react-test-renderer": "16.3.1",
     "redux-devtools-extension": "^2.13.2"
   },
+  "pre-commit": [
+    "eslint-git"
+  ],
   "jest": {
     "preset": "react-native"
   }

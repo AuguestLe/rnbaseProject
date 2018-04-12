@@ -1,4 +1,4 @@
-import { AppRegistry } from 'react-native';
-import App from './src/containers/App';
+import { AppRegistry } from 'react-native'
+import App from './src/containers/App'
 
-AppRegistry.registerComponent('BaseProject', () => App);
+AppRegistry.registerComponent('BaseProject', () => App)
